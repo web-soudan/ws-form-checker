@@ -8,3 +8,9 @@ ALLOWED_ORIGIN = "https://web-soudan.co.jp"
 
 # ローカル開発用: wrangler secret put ANTHROPIC_API_KEY
 # 本番: Cloudflare Dashboard > Workers > Settings > Variables で設定
+
+[[d1_databases]]
+binding = "DB"
+database_name = "form-checker-db"
+database_id = "REPLACE_WITH_DATABASE_ID"  # npx wrangler d1 create form-checker-db で取得
+migrations_dir = "migrations"

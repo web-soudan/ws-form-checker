@@ -6,6 +6,7 @@
 export interface Env {
   ANTHROPIC_API_KEY: string;
   ALLOWED_ORIGIN: string;
+  DB: D1Database;
 }
 
 // 検出対象プラグイン定義
@@ -316,13 +317,32 @@ export default {
       };
     });
 
+    const spam = claudeResult.spam_protection ?? { detected: false, methods: [] as string[] };
+    const analyzedAt = new Date().toISOString();
+
     const response = {
       url: targetUrl,
       detected_plugins: enrichedPlugins,
-      spam_protection: claudeResult.spam_protection ?? { detected: false, methods: [] },
+      spam_protection: spam,
       notes: claudeResult.notes ?? "",
-      analyzed_at: new Date().toISOString(),
+      analyzed_at: analyzedAt,
     };
+
+    // D1 に診断結果を非同期で保存（失敗してもレスポンスには影響させない）
+    env.DB.prepare(
+      `INSERT INTO analyses (url, plugins, spam_detected, spam_methods, notes, analyzed_at)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    )
+      .bind(
+        targetUrl,
+        JSON.stringify(enrichedPlugins),
+        spam.detected ? 1 : 0,
+        JSON.stringify(spam.methods),
+        claudeResult.notes ?? "",
+        analyzedAt
+      )
+      .run()
+      .catch(() => {});
 
     return new Response(JSON.stringify(response), {
       status: 200,
