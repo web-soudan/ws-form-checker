@@ -14,7 +14,7 @@ const PLUGINS = [
     id: "mw_wp_form",
     name: "MW WP Form",
     signals: ["mw_wp_form", "/plugins/mw-wp-form/"],
-    latestVersion: "5.1.1",
+    readmeSlug: "mw-wp-form",
   },
   {
     id: "contact_form_7",
@@ -49,6 +49,36 @@ const SPAM_SIGNALS = [
   { name: "hCaptcha", signals: ["hcaptcha.com", "h-captcha"] },
   { name: "Akismet", signals: ["akismet"] },
 ];
+
+// 対象サイトの readme.txt から Stable tag を取得
+async function fetchReadmeVersion(targetUrl: string, pluginSlug: string): Promise<string | null> {
+  try {
+    const { protocol, host } = new URL(targetUrl);
+    const readmeUrl = `${protocol}//${host}/wp-content/plugins/${pluginSlug}/readme.txt`;
+    const res = await fetch(readmeUrl, { signal: AbortSignal.timeout(5000) });
+    if (!res.ok) return null;
+    const text = await res.text();
+    const m = text.match(/Stable tag:\s*([\d.]+)/i);
+    return m ? m[1] : null;
+  } catch {
+    return null;
+  }
+}
+
+// WordPress.org API から最新バージョンを取得
+async function fetchLatestWpVersion(pluginSlug: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://api.wordpress.org/plugins/info/1.0/${pluginSlug}.json`,
+      { signal: AbortSignal.timeout(5000) }
+    );
+    if (!res.ok) return null;
+    const data = (await res.json()) as { version?: string };
+    return data.version ?? null;
+  } catch {
+    return null;
+  }
+}
 
 // バージョン文字列を抽出 (ver=X.X.X パターン)
 function extractVersion(html: string, pluginSlug: string): string | null {
@@ -217,21 +247,24 @@ export default {
       id: string;
       name: string;
       version: string | null;
-      latestVersion?: string;
     }[] = [];
 
     for (const plugin of PLUGINS) {
       const hit = plugin.signals.some((s) => html.includes(s));
       if (hit) {
         const version = extractVersion(html, plugin.id.replace(/_/g, "-"));
-        firstPass.push({
-          id: plugin.id,
-          name: plugin.name,
-          version,
-          latestVersion: plugin.latestVersion,
-        });
+        firstPass.push({ id: plugin.id, name: plugin.name, version });
       }
     }
+
+    // MW WP Form 検出時: readme.txt から実インストール版、WP API から最新版を並行取得
+    const mwDetected = firstPass.find((p) => p.id === "mw_wp_form");
+    const [mwInstalledVersion, mwLatestVersion] = mwDetected
+      ? await Promise.all([
+          fetchReadmeVersion(targetUrl, "mw-wp-form"),
+          fetchLatestWpVersion("mw-wp-form"),
+        ])
+      : [null, null];
 
     // Claude APIで詳細解析
     let claudeResult: {
@@ -269,14 +302,17 @@ export default {
     // バージョン情報をfirstPassの結果でエンリッチ
     const enrichedPlugins = (claudeResult.detected_plugins ?? []).map((p) => {
       const fp = firstPass.find((f) => f.id === p.id);
-      const version = p.version ?? fp?.version ?? null;
-      const plugin = PLUGINS.find((pl) => pl.id === p.id);
-      const outdated = isOutdated(version, plugin?.latestVersion);
+      // MW WP Form はreadme.txtの実測値を優先、それ以外はClause/firstPassの値
+      const version = p.id === "mw_wp_form"
+        ? (mwInstalledVersion ?? p.version ?? fp?.version ?? null)
+        : (p.version ?? fp?.version ?? null);
+      const latestVersion = p.id === "mw_wp_form" ? mwLatestVersion : null;
+      const outdated = isOutdated(version, latestVersion ?? undefined);
       return {
         ...p,
         version,
         is_outdated: outdated,
-        latest_version: plugin?.latestVersion ?? null,
+        latest_version: latestVersion,
       };
     });
 
