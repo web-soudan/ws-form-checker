@@ -14,7 +14,7 @@ const PLUGINS = [
     id: "mw_wp_form",
     name: "MW WP Form",
     signals: ["mw_wp_form", "mw-wp-form", "/plugins/mw-wp-form/"],
-    latestVersion: "5.0.5",
+    latestVersion: "5.1.1",
   },
   {
     id: "contact_form_7",
