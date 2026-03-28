@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>フォームプラグイン診断 - Webの相談所</title>
+  <style>
+    body { font-family: sans-serif; background: #f8f8f6; margin: 0; padding: 40px 20px; }
+    .container { max-width: 680px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+    h1 { font-size: 22px; color: #2C2C30; margin: 0 0 8px; }
+    .lead { font-size: 15px; color: #666; margin: 0 0 28px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>フォームプラグイン診断</h1>
+    <p class="lead">
+      WordPressのお問い合わせフォームに関するセキュリティ状況を無料で診断します。<br>
+      フォームが設置されているページのURLを入力してください。
+    </p>
+
+    <!--
+      埋め込みはここだけ。
+      data-worker-url を省略すると form-checker.js 内の DEFAULT_WORKER_URL が使われます。
+    -->
+    <div id="form-checker-widget"
+         data-worker-url="https://form-checker-api.YOUR_SUBDOMAIN.workers.dev">
+    </div>
+  </div>
+
+  <script src="./form-checker.js"></script>
+</body>
+</html>

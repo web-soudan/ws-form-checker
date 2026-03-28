@@ -1,0 +1,10 @@
+name = "form-checker-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ALLOWED_ORIGIN = "https://web-soudan.co.jp"
+
+# ローカル開発用: wrangler secret put ANTHROPIC_API_KEY
+# 本番: Cloudflare Dashboard > Workers > Settings > Variables で設定
