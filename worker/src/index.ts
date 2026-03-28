@@ -13,7 +13,7 @@ const PLUGINS = [
   {
     id: "mw_wp_form",
     name: "MW WP Form",
-    signals: ["mw_wp_form", "mw-wp-form", "/plugins/mw-wp-form/"],
+    signals: ["mw_wp_form", "/plugins/mw-wp-form/"],
     latestVersion: "5.1.1",
   },
   {
