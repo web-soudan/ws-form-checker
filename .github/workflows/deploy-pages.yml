@@ -1,17 +1,16 @@
-name: Deploy Worker
+name: Deploy Pages (JS配信)
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'worker/**'
-      - '.github/workflows/deploy.yml'
+      - 'pages/**'
+      - '.github/workflows/deploy-pages.yml'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    name: Deploy to Cloudflare Workers
     steps:
       - uses: actions/checkout@v4
 
@@ -19,13 +18,8 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install dependencies
-        working-directory: worker
-        run: npm ci
-
-      - name: Deploy
-        working-directory: worker
-        run: npx wrangler deploy
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler@latest pages deploy pages/ --project-name=ws-form-checker --branch=main
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
