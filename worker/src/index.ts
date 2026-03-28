@@ -54,7 +54,9 @@ const SPAM_SIGNALS = [
 function extractVersion(html: string, pluginSlug: string): string | null {
   const re = new RegExp(`${pluginSlug}[^"']*[?&]ver=([\\d.]+)`, "i");
   const m = html.match(re);
-  return m ? m[1] : null;
+  if (!m) return null;
+  // ドットを含まない場合はキャッシュバスター用ハッシュの可能性があるため無視
+  return m[1].includes(".") ? m[1] : null;
 }
 
 // バージョン比較 (simple semver)
