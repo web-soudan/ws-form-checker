@@ -7,7 +7,7 @@
  *   <script src="/form-checker/form-checker.js"></script>
  *
  * または data 属性で Worker URL を上書き可能:
- *   <div id="form-checker-widget" data-worker-url="https://your-worker.workers.dev"></div>
+ *   <div id="form-checker-widget" data-worker-url="https://form-checker-api.web-d9a.workers.dev"></div>
  */
 
 (function () {
@@ -16,7 +16,7 @@
   // ============================================================
   // 設定（デプロイ後に書き換え）
   // ============================================================
-  const DEFAULT_WORKER_URL = "https://form-checker-api.YOUR_SUBDOMAIN.workers.dev";
+  const DEFAULT_WORKER_URL = "https://form-checker-api.web-d9a.workers.dev";
 
   // CTA URL（確定次第書き換え）
   const CTA = {
