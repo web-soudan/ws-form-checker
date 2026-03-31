@@ -12,5 +12,5 @@ ALLOWED_ORIGIN = "https://web-soudan.co.jp"
 [[d1_databases]]
 binding = "DB"
 database_name = "form-checker-db"
-database_id = "REPLACE_WITH_DATABASE_ID"  # npx wrangler d1 create form-checker-db で取得
+database_id = "f6528b2d-2685-459d-a72a-556ec3dfc806"  # npx wrangler d1 create form-checker-db で取得
 migrations_dir = "migrations"
