@@ -191,7 +191,7 @@ ${spamSummary}
 }
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const origin = request.headers.get("Origin") ?? "";
     const corsHeaders = buildCorsHeaders(origin, env.ALLOWED_ORIGIN);
 
@@ -329,20 +329,22 @@ export default {
     };
 
     // D1 に診断結果を非同期で保存（失敗してもレスポンスには影響させない）
-    env.DB.prepare(
-      `INSERT INTO analyses (url, plugins, spam_detected, spam_methods, notes, analyzed_at)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    )
-      .bind(
-        targetUrl,
-        JSON.stringify(enrichedPlugins),
-        spam.detected ? 1 : 0,
-        JSON.stringify(spam.methods),
-        claudeResult.notes ?? "",
-        analyzedAt
+    ctx.waitUntil(
+      env.DB.prepare(
+        `INSERT INTO analyses (url, plugins, spam_detected, spam_methods, notes, analyzed_at)
+         VALUES (?, ?, ?, ?, ?, ?)`
       )
-      .run()
-      .catch(() => {});
+        .bind(
+          targetUrl,
+          JSON.stringify(enrichedPlugins),
+          spam.detected ? 1 : 0,
+          JSON.stringify(spam.methods),
+          claudeResult.notes ?? "",
+          analyzedAt
+        )
+        .run()
+        .catch(() => {})
+    );
 
     return new Response(JSON.stringify(response), {
       status: 200,
