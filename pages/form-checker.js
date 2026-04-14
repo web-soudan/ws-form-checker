@@ -20,9 +20,9 @@
 
   // CTA URL（確定次第書き換え）
   const CTA = {
-    consult:    "https://web-soudan.co.jp/contact/",          // 無料相談フォーム
-    turnstile:  "https://web-soudan.co.jp/turnstile-addon/",  // Turnstileアドオン購入
-    maintenance:"https://web-soudan.co.jp/maintenance/",       // 保守プラン案内
+    consult:    "https://web-soudan.co.jp/service/wordpress-support/#menu-1",  // WordPressのトラブル相談／Web相談
+    turnstile:  "https://web-soudan.co.jp/topics/5945/",  // Turnstileアドオンの案内
+    maintenance:"https://web-soudan.co.jp/service/wordpress-support/#category-2",       // 保守プラン案内
   };
 
   // ============================================================
@@ -122,8 +122,8 @@
         ctaHtml = `
         <div class="fck-cta">
           <p class="fck-cta-label">このサイトのセキュリティが心配な方へ</p>
-          <a class="fck-cta-btn fck-cta-primary" href="${CTA.consult}" target="_blank" rel="noopener">無料相談を申し込む（キャンペーン対象）</a>
-          <a class="fck-cta-btn fck-cta-secondary" href="${CTA.turnstile}" target="_blank" rel="noopener">Turnstileアドオンで自己対応する</a>
+          <a class="fck-cta-btn fck-cta-primary" href="${CTA.consult}" target="_blank" rel="noopener">有料相談を申し込む</a>
+          <a class="fck-cta-btn fck-cta-secondary" href="${CTA.turnstile}" target="_blank" rel="noopener">Turnstileアドオンについて詳しく見る</a>
           <a class="fck-cta-btn fck-cta-secondary" href="${CTA.maintenance}" target="_blank" rel="noopener">保守プランの詳細を見る</a>
         </div>`;
       } else {
@@ -140,7 +140,7 @@
       <div class="fck-cta">
         <p class="fck-cta-label">WordPress サイトの安全な運用をお手伝いします</p>
         <a class="fck-cta-btn fck-cta-secondary" href="${CTA.maintenance}" target="_blank" rel="noopener">保守プランの詳細を見る</a>
-        <a class="fck-cta-btn fck-cta-secondary" href="${CTA.consult}" target="_blank" rel="noopener">無料相談を申し込む</a>
+        <a class="fck-cta-btn fck-cta-secondary" href="${CTA.consult}" target="_blank" rel="noopener">有料相談を申し込む</a>
       </div>`;
     }
 
@@ -178,7 +178,7 @@
       </div>
       <div class="fck-cta">
         <p class="fck-cta-label">WordPress サイトの運用でお困りの場合は</p>
-        <a class="fck-cta-btn fck-cta-secondary" href="${CTA.consult}" target="_blank" rel="noopener">無料相談を申し込む</a>
+        <a class="fck-cta-btn fck-cta-secondary" href="${CTA.consult}" target="_blank" rel="noopener">有料相談を申し込む</a>
       </div>
     </div>`;
   }
